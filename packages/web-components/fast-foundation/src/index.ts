@@ -27,6 +27,7 @@ export {
 } from "./design-token/interfaces";
 export * from "./di/index";
 export * from "./dialog/index";
+export { reflectAttributes } from "./directives/reflect-attributes";
 export * from "./disclosure/index";
 export * from "./divider/index";
 export * from "./flipper/index";
@@ -44,6 +45,7 @@ export * from "./progress/index";
 export * from "./radio-group/index";
 export * from "./radio/index";
 export * from "./horizontal-scroll/index";
+export * from "./search/index";
 export * from "./select/index";
 export * from "./skeleton/index";
 export * from "./slider-label/index";

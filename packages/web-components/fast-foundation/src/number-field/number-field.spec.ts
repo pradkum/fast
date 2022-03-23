@@ -8,7 +8,7 @@ const FASTNumberField = NumberField.compose({
     template,
 })
 
-async function setup(props?) {
+async function setup(props?: Partial<NumberField>) {
     const { element, connect, disconnect, parent } = await fixture(FASTNumberField());
 
     if(props) {
@@ -473,6 +473,25 @@ describe("NumberField", () => {
             await disconnect();
         });
 
+        it("should update input field when script sets value", async () => {
+            const { element, disconnect, parent } = await setup();
+            const value = "10";
+
+            expect(
+                (element.shadowRoot?.querySelector(".control") as HTMLInputElement).value
+            ).to.be.empty;
+
+            element.setAttribute('value', value);
+
+            await DOM.nextUpdate();
+
+            expect(
+                (element.shadowRoot?.querySelector(".control") as HTMLInputElement).value
+            ).to.equal(value);
+
+            await disconnect();
+        });
+
         it("should put the control into a clean state, where value attribute changes the property value prior to user or programmatic interaction", async () => {
             const { element, disconnect, parent } = await setup();
             const form = document.createElement("form");
@@ -519,7 +538,7 @@ describe("NumberField", () => {
 
         it("should set value to max when value is greater than max", async () => {
             const max = 10;
-            const value = 20;
+            const value = '20';
             const { element, disconnect } = await setup({value, max});
 
             expect(element.value).to.equal(max.toString());
@@ -529,7 +548,7 @@ describe("NumberField", () => {
 
         it("should set value to max if the max changes to a value less than the value", async () => {
             const max = 10;
-            const value = 10 + max;
+            const value = `${10 + max}`;
             const { element, disconnect } = await setup({value});
 
             expect(element.value).to.equal(value.toString());
@@ -544,7 +563,7 @@ describe("NumberField", () => {
 
         it("should set value to min when value is less than min", async () => {
             const min = 10;
-            const value = min - 8;
+            const value = `${min - 8}`;
             const { element, disconnect } = await setup({value, min});
 
             expect(element.value).to.equal(min.toString());
@@ -558,7 +577,7 @@ describe("NumberField", () => {
 
         it("should set value to min if the min changes to a value more than the value", async () => {
             const min = 20;
-            const value = min - 10;
+            const value = `${min - 10}`;
             const { element, disconnect } = await setup({value});
 
             expect(element.value).to.equal(value.toString());
@@ -609,7 +628,7 @@ describe("NumberField", () => {
         it("should increment the value by the step amount", async () => {
             const step = 2;
             const value = 5;
-            const { element, disconnect } = await setup({step, value});
+            const { element, disconnect } = await setup({step, value: value.toString()});
 
             element.stepUp();
 
@@ -621,7 +640,7 @@ describe("NumberField", () => {
         it("should decrement the value by the step amount", async () => {
             const step = 2;
             const value = 5;
-            const { element, disconnect } = await setup({step, value});
+            const { element, disconnect } = await setup({step, value: value.toString()});
 
             element.stepDown();
 
@@ -653,10 +672,84 @@ describe("NumberField", () => {
             await disconnect();
         });
 
+        it("should decrement to zero when no value and negative min", async () => {
+            const min = -10;
+            const { element, disconnect } = await setup({min});
+
+            element.stepDown();
+            await DOM.nextUpdate();
+
+            expect(element.value).to.equal(`0`);
+
+            await disconnect();
+        });
+
+        it("should increment to zero when no value and negative min", async () => {
+            const min = -10;
+            const { element, disconnect } = await setup({min});
+
+            element.stepUp();
+            await DOM.nextUpdate();
+
+            expect(element.value).to.equal(`0`);
+
+            await disconnect();
+        });
+
+        it("should decrement to min when no value and min > 0", async () => {
+            const min = 10;
+            const { element, disconnect } = await setup({min});
+
+            element.stepDown();
+            await DOM.nextUpdate();
+
+            expect(element.value).to.equal(min.toString());
+
+            await disconnect();
+        });
+
+        it("should increment to min when no value and min > 0", async () => {
+            const min = 10;
+            const { element, disconnect } = await setup({min});
+
+            element.stepUp();
+            await DOM.nextUpdate();
+
+            expect(element.value).to.equal(min.toString());
+
+            await disconnect();
+        });
+
+        it("should decrement to max when no value and min and max < 0", async () => {
+            const min = -100;
+            const max = -10;
+            const { element, disconnect } = await setup({min, max});
+
+            element.stepDown();
+            await DOM.nextUpdate();
+
+            expect(element.value).to.equal(max.toString());
+
+            await disconnect();
+        });
+
+        it("should increment to mx when no value and min and max < 0", async () => {
+            const min = -100;
+            const max = -10;
+            const { element, disconnect } = await setup({min, max});
+
+            element.stepUp();
+            await DOM.nextUpdate();
+
+            expect(element.value).to.equal(max.toString());
+
+            await disconnect();
+        });
+
         it("should update the proxy value when incrementing the value", async () => {
             const step = 2;
             const value = 5;
-            const { element, disconnect } = await setup({step, value});
+            const { element, disconnect } = await setup({step, value: value.toString()});
 
             element.stepUp();
 
@@ -669,7 +762,7 @@ describe("NumberField", () => {
         it("should update the proxy value when decrementing the value", async () => {
             const step = 2;
             const value = 5;
-            const { element, disconnect } = await setup({step, value});
+            const { element, disconnect } = await setup({step, value: value.toString()});
 
             element.stepDown();
 
@@ -678,6 +771,32 @@ describe("NumberField", () => {
 
             await disconnect();
         });
+
+        it("should correct rounding errors", async () => {
+            const step = .1;
+            let value = .2.toString();
+            const { element, disconnect } = await setup({step, value});
+            const incrementValue = () => {
+                element.stepUp();
+                value = (parseFloat(value) + step).toPrecision(1);
+            }
+
+            expect(element.value).to.equal(value);
+
+            incrementValue();
+            expect(element.value).to.equal(value);
+
+            incrementValue();
+            expect(element.value).to.equal(value);
+
+            incrementValue();
+            expect(element.value).to.equal(value);
+
+            incrementValue();
+            expect(element.value).to.equal(value);
+
+            await disconnect();
+        })
     });
 
     describe("value validation", () => {
@@ -760,6 +879,28 @@ describe("NumberField", () => {
 
             expect(
                 element.shadowRoot?.querySelector(".controls")).to.equal(null);
+
+            await disconnect();
+        });
+    });
+
+    describe("valueAsNumber", () => {
+        it("should allow setting value with number", async () => {
+            const { element, disconnect } = await setup();
+
+            element.valueAsNumber = 18;
+
+            expect(element.value).to.equal("18");
+
+            await disconnect();
+        });
+
+        it("should allow reading value as number", async () => {
+            const { element, disconnect } = await setup();
+
+            element.value = "18";
+
+            expect(element.valueAsNumber).to.equal(18);
 
             await disconnect();
         });
