@@ -1,5 +1,5 @@
 import type { Callable } from "./interfaces";
-import { KernelServiceId, $global, TrustedTypesPolicy } from "./platform";
+import { $global, KernelServiceId, TrustedTypesPolicy } from "./platform";
 
 const updateQueue = $global.FAST.getById(KernelServiceId.updateQueue, () => {
     const tasks = [] as Callable[];

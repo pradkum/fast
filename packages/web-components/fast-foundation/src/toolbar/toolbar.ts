@@ -312,7 +312,7 @@ export class DelegatesARIAToolbar {
      * HTML Attribute: aria-labelledby
      */
     @attr({ attribute: "aria-labelledby" })
-    public ariaLabelledby: string;
+    public ariaLabelledby: string | null;
 
     /**
      * The label surfaced to assistive technologies.
@@ -322,7 +322,7 @@ export class DelegatesARIAToolbar {
      * HTML Attribute: aria-label
      */
     @attr({ attribute: "aria-label" })
-    public ariaLabel: string;
+    public ariaLabel: string | null;
 }
 
 /**
