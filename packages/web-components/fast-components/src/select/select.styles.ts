@@ -1,7 +1,6 @@
 import { css } from "@microsoft/fast-element";
 import type { ElementStyles } from "@microsoft/fast-element";
 import {
-    DesignToken,
     disabledCursor,
     display,
     focusVisible,
@@ -36,8 +35,7 @@ import {
     typeRampBaseFontSize,
     typeRampBaseLineHeight,
 } from "../design-tokens";
-import { optionHeight } from "../listbox-option/listbox-option.styles";
-import { listboxStrokeOffset, listboxStyles } from "../listbox/listbox.styles";
+import { listboxStyles } from "../listbox/listbox.styles";
 import { elevation } from "../styles/elevation";
 import { heightNumber } from "../styles/size";
 
@@ -97,7 +95,10 @@ export const selectStyles: FoundationElementTemplate<ElementStyles, SelectOption
     }
 
     .control + .listbox {
-        max-height: calc((var(--select-max-height) * ${optionHeight} + ${listboxStrokeOffset}) * 1px);
+        --stroke-size: calc(${designUnit} * ${strokeWidth} * 2);
+        max-height: calc(
+            (var(--listbox-max-height) * ${heightNumber} + var(--stroke-size)) * 1px
+        );
     }
 
     ${selectContext ? css`
@@ -188,7 +189,7 @@ export const selectStyles: FoundationElementTemplate<ElementStyles, SelectOption
     .selected-value {
         flex: 1 1 auto;
         font-family: inherit;
-        min-width: calc((var(--option-width, 0) * 1px) - var(--indicator-width));
+        min-width: calc((var(--listbox-scroll-width, 0) * 1px) - var(--indicator-width));
         overflow: hidden;
         text-align: start;
         text-overflow: ellipsis;

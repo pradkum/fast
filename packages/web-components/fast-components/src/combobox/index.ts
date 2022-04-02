@@ -1,9 +1,10 @@
+import { css, ElementStyles } from "@microsoft/fast-element";
 import {
-    ComboboxOptions,
     Combobox as FoundationCombobox,
     comboboxTemplate as template,
 } from "@microsoft/fast-foundation";
-import { optionHeight } from "../listbox-option/listbox-option.styles";
+import type { ComboboxOptions } from "@microsoft/fast-foundation";
+import { heightNumberAsToken } from "../design-tokens";
 import { comboboxStyles as styles } from "./combobox.styles";
 
 /**
@@ -12,13 +13,40 @@ import { comboboxStyles as styles } from "./combobox.styles";
  */
 export class Combobox extends FoundationCombobox {
     /**
+     * An internal stylesheet to hold calculated CSS custom properties.
+     *
+     * @internal
+     */
+    private computedStylesheet?: ElementStyles;
+
+    /**
      * @internal
      */
     protected maxHeightChanged(prev: number | undefined, next: number): void {
-        this.style.setProperty(
-            "--select-max-height",
-            `${Math.floor(this.maxHeight / optionHeight.getValueFor(this))}`
-        );
+        this.updateComputedStylesheet();
+    }
+
+    /**
+     * Updates an internal stylesheet with calculated CSS custom properties.
+     *
+     * @internal
+     */
+    protected updateComputedStylesheet(): void {
+        if (this.computedStylesheet) {
+            this.$fastController.removeStyles(this.computedStylesheet);
+        }
+
+        const popupMaxHeight = Math.floor(
+            this.maxHeight / heightNumberAsToken.getValueFor(this)
+        ).toString();
+
+        this.computedStylesheet = css`
+            :host {
+                --listbox-max-height: ${popupMaxHeight};
+            }
+        `;
+
+        this.$fastController.addStyles(this.computedStylesheet);
     }
 }
 
