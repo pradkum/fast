@@ -19,6 +19,5 @@
         "experimentalDecorators": true
     },
     "include": ["fast-element/*.ts", "lit-element/**/*.ts", "utils/**/*.ts"],
-    "exclude": [],
-    "references": [{ "path": "../fast-element" }]
+    "exclude": []
 }
