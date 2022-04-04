@@ -36,6 +36,21 @@
                             "@microsoft/fast-element": "1.4.0"
                         }
                     }
+                },
+                {
+                    "name": "local-version",
+                    "packageVersions": {
+                        "label": "local",
+                        "dependencies": {
+                            "@microsoft/fast-element": {
+                                "kind": "git",
+                                "repo": "https://github.com/microsoft/fast.git",
+                                "ref": "master",
+                                "subdir": "packages/web-components/fast-element",
+                                "setupCommands": ["npm run build"]
+                            }
+                        }
+                    }
                 }
             ]
         }
