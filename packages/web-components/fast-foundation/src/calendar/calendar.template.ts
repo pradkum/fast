@@ -1,10 +1,23 @@
-import { html, repeat, when } from "@microsoft/fast-element";
+import {
+    child,
+    ChildViewTemplate,
+    html,
+    item,
+    ItemViewTemplate,
+    repeat,
+    when,
+} from "@microsoft/fast-element";
 import type { ViewTemplate } from "@microsoft/fast-element";
 import { endTemplate, startTemplate } from "../patterns/start-end";
 import { DataGrid, DataGridCell, DataGridRow } from "../data-grid";
 import type { FoundationElementTemplate } from "../foundation-element";
 import type { ElementDefinitionContext } from "../design-system";
-import type { Calendar, CalendarDateInfo, CalendarOptions } from "./calendar";
+import type {
+    Calendar,
+    CalendarDateInfo,
+    CalendarOptions,
+    WeekdayText,
+} from "./calendar";
 
 /**
  * A basic Calendar title template that includes the month and year
@@ -33,9 +46,9 @@ export const CalendarTitleTemplate: ViewTemplate<Calendar> = html`
  * @returns - The weekday labels template
  * @public
  */
-export const calendarWeekdayTemplate: (context) => ViewTemplate = context => {
+export const calendarWeekdayTemplate: (context) => ItemViewTemplate = context => {
     const cellTag = context.tagFor(DataGridCell);
-    return html`
+    return item<WeekdayText>`
         <${cellTag}
             class="week-day"
             part="week-day"
@@ -58,12 +71,12 @@ export const calendarWeekdayTemplate: (context) => ViewTemplate = context => {
 export const calendarCellTemplate: (
     context: ElementDefinitionContext,
     todayString: string
-) => ViewTemplate<CalendarDateInfo> = (
+) => ItemViewTemplate<CalendarDateInfo> = (
     context: ElementDefinitionContext,
     todayString: string
 ) => {
     const cellTag: string = context.tagFor(DataGridCell);
-    return html`
+    return item`
         <${cellTag}
             class="${(x, c) => c.parentContext.parent.getDayClassNames(x, todayString)}"
             part="day"
@@ -100,9 +113,9 @@ export const calendarCellTemplate: (
 export const calendarRowTemplate: (
     context: ElementDefinitionContext,
     todayString: string
-) => ViewTemplate = (context: ElementDefinitionContext, todayString: string) => {
+) => ChildViewTemplate = (context: ElementDefinitionContext, todayString: string) => {
     const rowTag = context.tagFor(DataGridRow);
-    return html`
+    return child`
         <${rowTag}
             class="week"
             part="week"
@@ -132,7 +145,7 @@ export const interactiveCalendarGridTemplate: (
     const gridTag: string = context.tagFor(DataGrid);
     const rowTag: string = context.tagFor(DataGridRow);
 
-    return html`
+    return html<Calendar>`
     <${gridTag} class="days interact" part="days" generate-header="none">
         <${rowTag}
             class="week-days"
@@ -160,25 +173,25 @@ export const interactiveCalendarGridTemplate: (
 export const noninteractiveCalendarTemplate: (todayString: string) => ViewTemplate = (
     todayString: string
 ) => {
-    return html`
+    return html<Calendar>`
         <div class="days" part="days">
             <div class="week-days" part="week-days">
                 ${repeat(
                     x => x.getWeekdayText(),
-                    html`
+                    html<WeekdayText>`
                         <div class="week-day" part="week-day" abbr="${x => x.abbr}">
                             ${x => x.text}
                         </div>
                     `
                 )}
             </div>
-            ${repeat(
+            ${repeat<Calendar>(
                 x => x.getDays(),
-                html`
+                child<CalendarDateInfo[]>`
                     <div class="week">
                         ${repeat(
                             x => x,
-                            html`
+                            child<CalendarDateInfo>`
                                 <div
                                     class="${(x, c) =>
                                         c.parentContext.parent.getDayClassNames(
@@ -207,7 +220,7 @@ export const noninteractiveCalendarTemplate: (todayString: string) => ViewTempla
                                     </div>
                                     <slot
                                         name="${x => x.month}-${x => x.day}-${x =>
-                                            x.year}"
+                                x.year}"
                                     ></slot>
                                 </div>
                             `
@@ -235,7 +248,7 @@ export const calendarTemplate: FoundationElementTemplate<
     const todayString: string = `${
         today.getMonth() + 1
     }-${today.getDate()}-${today.getFullYear()}`;
-    return html`
+    return html<Calendar>`
         <template>
             ${startTemplate}
             ${definition.title instanceof Function
