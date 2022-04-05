@@ -30,10 +30,13 @@ export class CEButton extends FASTElement {
         `,
         attributes: ["appearance"],
     };
-    constructor() {
-        super();
 
-        this.appearance = "neutral";
+    connectedCallback() {
+        super.connectedCallback();
+
+        if (this.appearance === undefined) {
+            this.appearance = "neutral";
+        }
     }
 }
 export class CEModal extends FASTElement {

@@ -26,12 +26,15 @@ entryPoints.forEach(entry => {
             defaultRenderInfo,
             entry.source
         );
+        let consolidated = "";
 
         for (const part of result) {
             res.write(part);
+            consolidated += part;
         }
 
         res.end();
+        console.log(consolidated);
     });
 });
 
