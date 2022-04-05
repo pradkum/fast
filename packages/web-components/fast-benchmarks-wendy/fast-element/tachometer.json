@@ -48,7 +48,11 @@
                                 "repo": "https://github.com/microsoft/fast.git",
                                 "ref": "users/wendy/tachometer-benchmarking",
                                 "subdir": "packages/web-components/fast-element",
-                                "setupCommands": ["yarn install", "yarn run build"]
+                                "setupCommands": [
+                                    "yarn install",
+                                    "yarn run bootstrap",
+                                    "yarn run build"
+                                ]
                             }
                         }
                     }
