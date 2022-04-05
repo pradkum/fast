@@ -5,6 +5,7 @@ import fastSSR from "@microsoft/fast-ssr";
 import helloWorld from "./examples/hello-world.js";
 import page from "./examples/page.js";
 import repeater, { source as repeaterSource } from "./examples/repeater.js";
+import customElements from "./examples/custom-elements.js";
 
 const app = express();
 const port = 8080;
@@ -14,6 +15,7 @@ const entryPoints = [
     { path: "/", template: helloWorld },
     { path: "/page", template: page },
     { path: "/repeater", template: repeater, source: repeaterSource },
+    { path: "/custom-elements", template: customElements },
 ];
 
 entryPoints.forEach(entry => {
