@@ -37,17 +37,18 @@
                         }
                     }
                 },
+
                 {
-                    "name": "local-version",
+                    "name": "previous-version",
                     "packageVersions": {
-                        "label": "local",
+                        "label": "1.4.0",
                         "dependencies": {
                             "@microsoft/fast-element": {
                                 "kind": "git",
                                 "repo": "https://github.com/microsoft/fast.git",
-                                "ref": "master",
+                                "ref": "users/wendy/tachometer-benchmarking",
                                 "subdir": "packages/web-components/fast-element",
-                                "setupCommands": ["npm run build"]
+                                "setupCommands": ["yarn install", "yarn run build"]
                             }
                         }
                     }

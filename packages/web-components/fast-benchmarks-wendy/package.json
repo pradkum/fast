@@ -4,7 +4,6 @@
     "description": "",
     "scripts": {
         "benchmark": "tach --config fast-element/tachometer.json",
-        "benchmark:lit": "tach --config lit-element/list/tachometer.json",
         "build": "tsc --build"
     },
     "author": "Microsoft",
