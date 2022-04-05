@@ -4,9 +4,6 @@
   "description": "",
   "type": "module",
   "main": "index.js",
-  "scripts": {
-    "serve": "http-server -c-1"
-  },
   "author": "",
   "license": "ISC",
   "dependencies": {

@@ -33,6 +33,7 @@
   "main": "./dist/esm/exports.js",
   "types": "./dist/dts/exports.d.ts",
   "exports": {
+    ".": "./dist/esm/exports.js",
     "./install-dom-shim": "./dist/esm/dom-shim.js"
   },
   "private": true,

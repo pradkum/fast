@@ -1,12 +1,34 @@
 /* eslint-disable */
 import "@microsoft/fast-ssr/install-dom-shim";
 import express from "express";
+import fastSSR from "@microsoft/fast-ssr";
+import helloWorld from "./examples/hello-world.js";
+import page from "./examples/page.js";
 
 const app = express();
 const port = 8080;
+const { templateRenderer, defaultRenderInfo } = fastSSR();
 
-app.get("/", (req, res) => {
-    res.send("Hello world");
+const entryPoints = [
+    { path: "/", template: helloWorld },
+    { path: "/page", template: page },
+];
+
+entryPoints.forEach(entry => {
+    app.get(entry.path, (req, res) => {
+        res.set("Content-Type", "text/html");
+        const result = templateRenderer.render(
+            entry.template,
+            defaultRenderInfo,
+            entry.source
+        );
+
+        for (const part of result) {
+            res.write(part);
+        }
+
+        res.end();
+    });
 });
 
 app.listen(port, () => {
